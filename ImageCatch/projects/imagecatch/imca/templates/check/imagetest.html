@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<main>
+    <p class="center-block" style="width: 300px; padding:50px;"></p>
+    <div class="container-fluid text-center">
+        <h1 class="mt-4 md-5">이미지 캐치</h1>
+        <div class="card bg-light mx-auto mt-4" style="width: 20rem; height: 20rem">
+            <ul class="nav nav-tabs nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#File">File</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="File">
+                    <div>
+                        <p class="mt-5 md-5"></p>
+                        <div id="image_container"></div>
+                        <label>
+                            <form action = "http://15.165.253.168:5000/image/fileupload" method = "POST"
+                            enctype = "multipart/form-data" id="next_form">
+                            <input type="file" id="myFile" name="file" class="sch1 file-input mt-5 ml-5" accept="image/*"
+                            onchange="setThumbnail(event);">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input id="next" class="btn btn-dark btn-sm mt-2 mr-5 ml-5" style="width: 320px;" type="submit" value="검사시작" />
+    </div>
+</main>
+{% endblock %}
+{% block script %}
+<script>
+function myFunction() {
+    var x = document.getElementById("myFile");
+    x.disabled = true;
+}
+
+function setThumbnail(event) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+    var img = document.createElement("img");
+    img.setAttribute("src", event.target.result);
+    img.width = '120';
+    document.querySelector("div#image_container").appendChild(img);
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+$("#next").click(function(){
+    if($.trim($(".sch1").val())==''){
+        alert("사진을 넣어주세요.");
+        return false;
+    }
+    $("#next_form").submit();
+});
+</script>
+{% endblock %}

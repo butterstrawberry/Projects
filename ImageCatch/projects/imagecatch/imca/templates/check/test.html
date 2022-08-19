@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<p class="center-block" style="width: 300px; padding:15px;"></p>
+<main>
+    <div class="showcase container-fluid text-center">
+        <h3><b>기존 이미지</b></h3>
+        <p><img src="{{ url_for('static', filename=image_file)}}" width=200 height=200></p>
+        <a href="{{ url_for('image.render_file') }}" class="btn btn-dark">검사 재검사</a>
+        <hr color="black" size="3">
+        {% if data1 | length %}
+        <div class="text-center"> 
+            <h3 style="color:red;"><b>유사한 이미지</b></h3>
+            <h4 style="color:red;">유사한 이미지가 검출되었습니다.</h4>
+        </div>
+        <div class ="row mt-3" id ="port">
+            {% for r, s in data1 %}
+            <div class="col-md-3 mb-5">
+                <div style="border: 3px none #ccc;">
+                    <img src= "{{ url_for('static', filename='image/image_compare/' + s)}}" width=170 height=170>
+                    <p class="center-block" style="padding:1px;"></p>
+                    <h5>이미지차이 : <b style="color:red;">{{ '%0.2f' % (r*100)|float }}%</b></h5>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class ="row mt-3" id ="port">
+                <div class="col-md-12 text-center mb-5">
+                    <div style="border: 5px none #ccc;">
+                        <img src= "{{ url_for('static', filename=image_file1)}}" class="rounded" width=300 height=300>
+                        <p><h5><b style="color:red;">유사한 이미지가 존재하지 않습니다.</b></h5></p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

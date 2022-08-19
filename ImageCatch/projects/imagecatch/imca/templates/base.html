@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" >
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <title>ImageCatch</title>
+    </head>
+    <body class="sb-nav-fixed">
+        <div id="layoutSidenav">           
+            <div id="layoutSidenav_content">
+                {% include "navbar.html" %}
+                {% block content %}
+                {% endblock %}
+                {% include "footer.html" %}
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+        <script src="{{ url_for('static', filename='all.min.js') }}"></script> 
+        {% block script %}
+        {% endblock %}
+    </body>
+</html>

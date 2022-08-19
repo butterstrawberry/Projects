@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <p class="center-block" style="width: 300px; padding:30px;"></p>
+    <div class="container my-3">
+        <table class="table">
+            <thead>
+                <tr class="text-center thead-dark">
+                    <th>번호</th>
+                    <th>구분</th>
+                    <th style="width:50%">제목</th>
+                    <th>글쓴이</th>
+                    <th>작성일시</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if board_list %}
+                {% for board in board_list.items %}
+                <tr class="text-center">
+                    <td>{{ board_list.total - ((board_list.page-1) * board_list.per_page) - loop.index0 }}</td>
+                    <td>{{ board.sections }}
+                    <td class="text-left">
+                        <a href="{{ url_for('board.detail', board_id=board.id) }}">{{ board.title }}</a>
+                        {% if board.comment_set|length > 0 %}
+                        <span class="text-danger small ml-2">{{ board.comment_set|length }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ board.user.username }}</td>
+                    <td>{{ board.create_date|datetime  }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="3">게시물이 없습니다.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+            {% if board_list.has_prev %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ board_list.prev_num }}" href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            {% for page_num in board_list.iter_pages() %}
+            {% if page_num %}
+            {% if page_num != board_list.page %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li class="disabled">
+                <a class="page-link" href="#">...</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if board_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ board_list.next_num }}" href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        <div class="justify-content">
+            <div class="float-right">
+                {% if g.user.permissions == 1 %}
+                <a href="{{ url_for('board.create') }}" class="btn btn-dark">글쓰기</a> 
+                {% elif g.user.permissions == 0 %}
+                <a href="{{ url_for('board.create') }}" class="btn btn-dark"><small>공지사항 쓰기</small></a> 
+                {% else %}
+                <a href="{{ url_for('board.create') }}" class="btn btn-dark">글쓰기</a> 
+                {% endif %}
+            </div>
+            <div class="col-4 input-group">
+                <input type="text" class="form-control kw" value="{{ kw or '' }}">
+                <div class="input-group-append">
+                <button class="btn btn-dark" type="button" id="btn_search">찾기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="searchForm" method="get" action="{{ url_for('board._list') }}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw or '' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+</form>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+    $("#btn_search").on('click', function() {
+        $("#kw").val($(".kw").val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}
